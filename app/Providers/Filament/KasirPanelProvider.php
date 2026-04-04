@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Kasir\Resources\Orders\OrderResource;
+use App\Filament\Kasir\Resources\Shifts\ShiftResource;
+use App\Filament\Resources\Members\MemberResource;
+use App\Filament\Resources\Products\ProductResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -52,6 +56,12 @@ class KasirPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->resources([
+                ShiftResource::class,
+                OrderResource::class,
+                MemberResource::class,
+                ProductResource::class,
             ]);
     }
 }
