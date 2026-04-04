@@ -8,14 +8,29 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
+    public function getRedirectRoute()
+    {
+        // Cek role menggunakan Spatie
+        if ($this->hasRole('admin')) {
+            return '/admin';
+        }
+        
+        if ($this->hasRole('kasir')) {
+            return '/kasir';
+        }
+
+        return '/'; // Default untuk pelanggan/guest
+    }
+    
     /**
      * Penyesuaian untuk Sistem Cafe:
      * Relasi ke tabel Shift (untuk audit kasir)
