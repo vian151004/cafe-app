@@ -1,0 +1,44 @@
+{
+  "orders": [
+    {
+      "id": "ORD-001",
+      "location": "Meja 5",
+      "items": "2x Cafe Latte (Oat Milk), 1x Almond Croissant",
+      "time": "04:12",
+      "status": "PENDING",
+      "payment": "cash",
+      "payment_label": "Bayar di Kasir",
+      "total": 119000
+    },
+    {
+      "id": "ORD-002",
+      "location": "Takeaway",
+      "items": "1x Iced Matcha Latte, 1x Blueberry Muffin",
+      "time": "04:15",
+      "status": "PENDING",
+      "payment": "ewallet",
+      "payment_label": "Bayar E-Wallet",
+      "total": 65000
+    },
+    {
+      "id": "ORD-003",
+      "location": "Meja 12",
+      "items": "3x Espresso, 2x Croissant",
+      "time": "04:08",
+      "status": "DIPROSES",
+      "payment": "cash",
+      "payment_label": "Bayar di Kasir",
+      "total": 145000
+    },
+    {
+      "id": "ORD-004",
+      "location": "Meja 3",
+      "items": "1x Cappuccino, 1x Avocado Toast",
+      "time": "03:55",
+      "status": "DIPROSES",
+      "payment": "ewallet",
+      "payment_label": "Bayar E-Wallet",
+      "total": 78000
+    }
+  ]
+}
