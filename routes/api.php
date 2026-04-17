@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\API\V1\AuthController;
-
+use App\Http\Controllers\API\V1\MenuController as V1MenuController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -17,5 +18,6 @@ Route::prefix('v1')->group(function () {
         // Route::get('/orders', [OrderController::class, 'index'])
         //     ->middleware('ability:kasir,admin');
             
+    Route::get('/menu', [V1MenuController ::class, 'getKatalog']);
     });
 });
