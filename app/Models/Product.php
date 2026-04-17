@@ -17,4 +17,14 @@ class Product extends Model
     {
         return $this->hasMany(StockMovement::class);
     }
+
+    public function reduceStock(int $amount): void
+    {
+        if ($this->stock >= $amount) {
+            throw new \Exception("Stok {$this->name} tidak mencukupi untuk dikurangi sebanyak {$amount}.");
+        }
+        
+        $this->decrement('stock', $amount);
+    }
+
 }
