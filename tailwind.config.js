@@ -12,6 +12,7 @@ export default {
             // Pastikan kurung ini membungkus colors
             colors: {
                 primary: '#005246',
+                secondary: '#00B89D',
                 cream: '#FFE8D1',
                 orange: '#F37721',
                 tealCard: '#004339',
