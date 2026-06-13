@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-gray-50 antialiased text-gray-900 pb-24">
-    <!-- SEMUA STYLE HARUS DI DALAM DIV INI -->
     <style>
         @keyframes bounce-in {
             0% { transform: scale(0.95); opacity: 0; }
@@ -10,7 +9,6 @@
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 
-    <!-- 1. Header & Navigasi -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -19,11 +17,17 @@
                 </div>
                 <div>
                     <h1 class="text-2xl font-extrabold text-gray-950 tracking-tight">Cafe <span class="text-orange-600">Vian</span></h1>
-                    <p class="text-xs text-gray-500 -mt-0.5">Nikmati menu terbaik kami</p>
+                    <p class="text-xs text-gray-500 -mt-0.5">
+                        @if($table_number && $table_number != 'Tanpa Meja')
+                            Pesanan diantar ke <span class="font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">Meja {{ $table_number }}</span>
+                        @else
+                            Nikmati menu terbaik kami
+                        @endif
+                    </p>
                 </div>
             </div>
             
-            <button class="relative p-2 rounded-full hover:bg-gray-100 transition">
+            <button onclick="document.getElementById('floating-cart')?.scrollIntoView({ behavior: 'smooth' })" class="relative p-2 rounded-full hover:bg-gray-100 transition">
                 <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 @if(session()->has('cart') && count(session('cart')) > 0)
                     <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-orange-600 rounded-full">
@@ -71,7 +75,7 @@
         @else
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 @foreach($products as $product)
-                    <div class="group bg-white rounded-3xl shadow-sm hover:shadow-lg transition-all border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="group bg-white rounded-3xl shadow-sm hover:shadow-lg transition-all border overflow-hidden flex flex-col {{ isset(session('cart')[$product->id]) ? 'border-orange-500 ring-2 ring-orange-100' : 'border-gray-100' }}">
                         <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
                             @if($product->image)
                                 <img src="{{ asset('storage/'.$product->image) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -92,10 +96,18 @@
 
                             <div class="mt-4">
                                 @if($product->stock > 0)
-                                    <button wire:click="addToCart({{ $product->id }})" class="w-full py-2.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition transform active:scale-95 flex items-center justify-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                                        Tambah
-                                    </button>
+                                    @if(isset(session('cart')[$product->id]))
+                                        <div class="w-full flex items-center justify-between bg-orange-600 text-white rounded-xl font-bold text-sm overflow-hidden shadow-md animate-bounce-in">
+                                            <button wire:click="decrementQuantity({{ $product->id }})" class="px-3 py-2.5 hover:bg-orange-700 transition active:scale-95 text-lg font-black">-</button>
+                                            <span class="text-sm font-black">{{ session('cart')[$product->id]['quantity'] }}</span>
+                                            <button wire:click="addToCart({{ $product->id }})" class="px-3 py-2.5 hover:bg-orange-700 transition active:scale-95 text-lg font-black">+</button>
+                                        </div>
+                                    @else
+                                        <button wire:click="addToCart({{ $product->id }})" class="w-full py-2.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition transform active:scale-95 flex items-center justify-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                            Tambah
+                                        </button>
+                                    @endif
                                 @else
                                     <button disabled class="w-full py-2.5 bg-gray-200 text-gray-400 rounded-xl font-bold text-sm cursor-not-allowed">Habis</button>
                                 @endif
@@ -107,9 +119,8 @@
         @endif
     </main>
 
-    <!-- 2. FLOATING CART PREVIEW -->
     @if(session()->has('cart') && count(session('cart')) > 0)
-        <div class="fixed bottom-6 right-6 left-6 md:left-auto md:w-96 bg-white rounded-3xl shadow-2xl border border-orange-100 p-6 z-[60] animate-bounce-in">
+        <div id="floating-cart" class="fixed bottom-6 right-6 left-6 md:left-auto md:w-96 bg-white rounded-3xl shadow-2xl border border-orange-100 p-6 z-[60] animate-bounce-in">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-extrabold text-gray-900 flex items-center gap-2 text-lg">
                     <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
@@ -142,9 +153,14 @@
                     <span class="text-gray-500 font-medium">Total Bayar</span>
                     <span class="text-2xl font-black text-gray-950">Rp{{ number_format(collect(session('cart'))->sum(fn($i) => $i['price'] * $i['quantity']), 0, ',', '.') }}</span>
                 </div>
-                <button wire:click="checkout" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-base shadow-lg shadow-orange-200 hover:bg-gray-900 transition-all transform active:scale-95 flex items-center justify-center gap-3">
-                    Checkout ke WhatsApp
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                <button wire:click="checkout" wire:loading.attr="disabled" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-base shadow-lg shadow-orange-200 hover:bg-gray-900 transition-all transform active:scale-95 flex items-center justify-center gap-3">
+                    <span wire:loading.remove class="flex items-center gap-2">
+                        Checkout ke WhatsApp
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </span>
+                    <span wire:loading class="flex items-center gap-2">
+                        Menyiapkan Nota Pesanan...
+                    </span>
                 </button>
             </div>
         </div>
@@ -155,5 +171,5 @@
             <h4 class="text-white font-bold text-lg uppercase tracking-widest">Cafe Vian</h4>
             <p class="text-xs mt-4">Made with ❤️ for Project Semester 4</p>
         </div>
-    </footer>
+    </footer >
 </div>

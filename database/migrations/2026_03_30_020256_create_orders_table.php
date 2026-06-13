@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained(); 
-            $table->foreignId('dining_table_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('dining_table_id')->nullable()->constrained('dining_tables')->onDelete('set null');
             $table->foreignId('member_id')->nullable()->constrained();
             $table->string('order_number')->unique();
             $table->decimal('total_price', 15, 2)->default(0);
