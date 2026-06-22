@@ -1,108 +1,120 @@
 <!DOCTYPE html>
-<html lang="id">
+<html class="light" lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'CafeKita - Cashier')</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
-    <style>
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.5);
-        }
-    </style>
 </head>
-<body class="bg-[#005246] min-h-screen flex">
-    <!-- Sidebar - Floating & Rounded -->
-    <aside id="sidebar" class="fixed lg:fixed inset-y-4 left-4 z-50 w-64 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
-        <div class="h-full m-0 bg-white/10 backdrop-blur-md rounded-3xl shadow-lg border border-white/20 flex flex-col overflow-hidden">
-            <!-- Logo -->
-            <div class="p-6 border-b border-white/20">
-                <h1 class="text-xl font-bold text-white">CafeKita</h1>
-                <p class="text-xs text-white/70 tracking-widest uppercase">Cashier</p>
-            </div>
+<body class="font-body antialiased">
+    <!-- Sidebar -->
+    <x-cashier.sidebar />
 
-            <!-- Navigation -->
-            <nav class="p-4 space-y-2 flex-1">
-                <a href="{{ route('cashier.orders') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ request()->routeIs('cashier.orders') || request()->routeIs('cashier.order.create') ? 'bg-white text-[#005246]' : 'text-white/80 hover:bg-white/20 hover:text-white' }}">
-                    <i data-lucide="receipt" class="w-5 h-5"></i>
-                    <span class="font-medium">Pesanan</span>
-                </a>
-                <a href="{{ route('cashier.history') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ request()->routeIs('cashier.history') ? 'bg-white text-[#005246]' : 'text-white/80 hover:bg-white/20 hover:text-white' }}">
-                    <i data-lucide="history" class="w-5 h-5"></i>
-                    <span class="font-medium">Riwayat Pesanan</span>
-                </a>
-                <a href="{{ route('cashier.menu') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ request()->routeIs('cashier.menu') ? 'bg-white text-[#005246]' : 'text-white/80 hover:bg-white/20 hover:text-white' }}">
-                    <i data-lucide="coffee" class="w-5 h-5"></i>
-                    <span class="font-medium">Menu & Stok</span>
-                </a>
-                <a href="{{ route('cashier.shift') }}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ request()->routeIs('cashier.shift') ? 'bg-white text-[#005246]' : 'text-white/80 hover:bg-white/20 hover:text-white' }}">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                    <span class="font-medium">Absen</span>
-                </a>
-            </nav>
+    <!-- Main Content Area -->
+    <main id="main-content" class="ml-[300px] min-h-screen">
+        <!-- Background Decor -->
+        <div class="fixed top-0 right-0 w-64 h-64 bg-[#FFE8D1]/20 blur-[100px] -z-10 rounded-full pointer-events-none"></div>
+        <div class="fixed bottom-0 left-[300px] w-96 h-96 bg-[#005246]/5 blur-[120px] -z-10 rounded-full pointer-events-none"></div>
 
-            <!-- User Profile -->
-            <div class="p-4 border-t border-white/20">
-                <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/10">
-                    <div class="w-10 h-10 rounded-full bg-white text-[#005246] flex items-center justify-center font-bold">
-                        <i data-lucide="user" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium text-sm text-white">Alex Rivera</p>
-                        <p class="text-xs text-white/70">SHIFT MANAGER</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </aside>
+        @yield('content')
 
-    <!-- Overlay -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
-
-    <!-- Main Content -->
-    <main class="flex-1 min-h-screen flex flex-col lg:pl-72">
-        <!-- Mobile Header -->
-        <header class="lg:hidden sticky top-0 z-30 bg-white/10 backdrop-blur-md border-b border-white/20 p-4 flex items-center gap-4">
-            <button onclick="toggleSidebar()" class="p-2 hover:bg-white/20 rounded-lg text-white">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-            <div>
-                <h1 class="font-bold text-white">CafeKita</h1>
-                <p class="text-xs text-white/70">Cashier</p>
-            </div>
-        </header>
-
-        <!-- Content -->
-        <div class="flex-1 p-4 lg:p-6 overflow-y-auto" style="background-image: linear-gradient(rgba(0, 82, 70, 0.5), rgba(0, 82, 70, 0.5)), url('/images/BGCashier.png'); background-size: cover; background-position: center; background-attachment: fixed;">
-            @yield('content')
-        </div>
+        @stack('scripts')
     </main>
 
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
+        (function() {
+            'use strict';
+
+            function getPath(url) {
+                try {
+                    const u = new URL(url, window.location.origin);
+                    return u.pathname.replace(/\/$/, '') || '/';
+                } catch { return url.replace(/\/$/, '') || '/'; }
+            }
+
+            function updateActiveNav(currentPath) {
+                document.querySelectorAll('nav a').forEach(function(link) {
+                    const navHref = link.getAttribute('href');
+                    if (!navHref) return;
+
+                    const navPath = getPath(navHref);
+                    const isExact = navPath === currentPath;
+                    const isChild = currentPath.startsWith(navPath + '/');
+
+                    link.classList.toggle('active-nav', isExact || isChild);
+                });
+            }
+
+            function isNavigationLink(link) {
+                if (!link || link.getAttribute('target') === '_blank') return false;
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('javascript:')) return false;
+                if (link.hasAttribute('download') || link.matches('a[href$=".pdf"], a[href$=".zip"]')) return false;
+                if (href.startsWith('//') || href.startsWith('http')) return false;
+                return true;
+            }
+
+            function replaceContent(html) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.querySelector('#main-content');
+                if (!newContent) return false;
+                document.querySelector('#main-content').innerHTML = newContent.innerHTML;
+                document.title = doc.title;
+                return true;
+            }
+
+            function executeScripts() {
+                document.querySelectorAll('#main-content script').forEach(function(oldScript) {
+                    var newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(function(attr) {
+                        newScript.setAttribute(attr.name, attr.value);
+                    });
+                    newScript.textContent = oldScript.textContent;
+                    oldScript.replaceWith(newScript);
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a');
+                if (!isNavigationLink(link)) return;
+
+                var href = link.getAttribute('href');
+                e.preventDefault();
+
+                var currentPath = getPath(window.location.href);
+                var newPath = getPath(href);
+                if (currentPath === newPath) return;
+
+                history.pushState({ url: href }, '', href);
+
+                fetch(href, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(res) {
+                    if (!res.ok) throw new Error();
+                    return res.text();
+                })
+                .then(function(html) {
+                    if (!replaceContent(html)) { window.location.href = href; return; }
+                    executeScripts();
+                    updateActiveNav(newPath);
+                })
+                .catch(function() {
+                    window.location.href = href;
+                });
+            });
+
+            window.addEventListener('popstate', function(e) {
+                if (e.state && e.state.url) {
+                    window.location.href = e.state.url;
+                }
+            });
+
+            updateActiveNav(getPath(window.location.href));
+        })();
     </script>
-    <script>
-        lucide.createIcons();
-    </script>
-    @stack('scripts')
 </body>
 </html>

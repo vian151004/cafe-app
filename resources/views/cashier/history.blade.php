@@ -1,173 +1,109 @@
 @extends('layouts.cashier')
 
 @section('title', 'Riwayat Pesanan')
-@section('header_title', 'Riwayat Pesanan')
 
 @section('content')
-<!-- Date Filter -->
-<div class="mb-6 flex flex-wrap gap-3 items-center">
-    <div class="flex items-center gap-2">
-        <input type="date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 focus:border-white focus:outline-none text-white text-sm w-36">
-        <span class="text-white/50">-</span>
-        <input type="date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 focus:border-white focus:outline-none text-white text-sm w-36">
-    </div>
-    <button class="px-4 py-2 bg-white text-[#005246] rounded-lg text-sm font-medium flex items-center gap-2">
-        <i data-lucide="filter" class="w-4 h-4"></i>Filter
-    </button>
-</div>
+<x-cashier.top-app-bar title="Riwayat Pesanan" search-placeholder="Cari Order ID..." />
 
-<!-- Summary Stats -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <p class="text-white/60 text-xs">Total Pesanan</p>
-        <p class="text-xl lg:text-2xl font-bold text-white">156</p>
-    </div>
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <p class="text-white/60 text-xs">Hari Ini</p>
-        <p class="text-xl lg:text-2xl font-bold text-white">24</p>
-    </div>
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <p class="text-white/60 text-xs">Total Pendapatan</p>
-        <p class="text-xl lg:text-2xl font-bold text-white">Rp 12.5jt</p>
-    </div>
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <p class="text-white/60 text-xs">Rata-rata/Order</p>
-        <p class="text-xl lg:text-2xl font-bold text-white">Rp 80rb</p>
-    </div>
-</div>
+<div class="p-8 max-w-[1400px] mx-auto">
+    <x-cashier.filter-section />
 
-<!-- History Cards (Mobile-first) -->
-<div class="space-y-3 lg:hidden">
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <div class="flex justify-between items-start mb-2">
-            <span class="font-bold text-white">#ORD-001</span>
-            <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span>
-        </div>
-        <div class="text-xs text-white/60 space-y-1">
-            <p>12 Apr 2026, 10:30</p>
-            <p>Meja 5 - 2 item</p>
-            <p class="font-bold text-white">Rp 68.000</p>
-        </div>
-    </div>
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <div class="flex justify-between items-start mb-2">
-            <span class="font-bold text-white">#ORD-002</span>
-            <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span>
-        </div>
-        <div class="text-xs text-white/60 space-y-1">
-            <p>12 Apr 2026, 09:15</p>
-            <p>Takeaway - 4 item</p>
-            <p class="font-bold text-white">Rp 125.000</p>
-        </div>
-    </div>
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <div class="flex justify-between items-start mb-2">
-            <span class="font-bold text-white">#ORD-003</span>
-            <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span>
-        </div>
-        <div class="text-xs text-white/60 space-y-1">
-            <p>11 Apr 2026, 18:45</p>
-            <p>Meja 2 - 3 item</p>
-            <p class="font-bold text-white">Rp 85.000</p>
-        </div>
-    </div>
-</div>
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        @foreach($stats as $stat)
+        <x-cashier.summary-card
+            title="{{ $stat['title'] }}"
+            value="{{ $stat['value'] }}"
+            icon="{{ $stat['icon'] }}"
+            icon-bg="{{ $stat['icon_bg'] }}"
+            icon-color="{{ $stat['icon_color'] }}"
+            accent-border="{{ $stat['accent_border'] }}"
+            badge-text="{{ $stat['badge_text'] ?? null }}"
+        />
+        @endforeach
+    </section>
 
-<!-- History Table (Desktop) -->
-<div class="hidden lg:block bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead class="bg-white/10">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-white/60 uppercase">Order ID</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-white/60 uppercase">Tanggal</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-white/60 uppercase">Meja</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-white/60 uppercase">Item</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-white/60 uppercase">Total</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-white/60 uppercase">Status</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-white/60 uppercase">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-white/10">
-                <tr class="hover:bg-white/5">
-                    <td class="px-4 py-3 text-sm font-medium text-white whitespace-nowrap">#ORD-001</td>
-                    <td class="px-4 py-3 text-sm text-white/80 whitespace-nowrap">12 Apr 2026, 10:30</td>
-                    <td class="px-4 py-3 text-sm text-white/80">Meja 5</td>
-                    <td class="px-4 py-3 text-sm text-white/80">2 item</td>
-                    <td class="px-4 py-3 text-sm font-bold text-white">Rp 68.000</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span></td>
-                    <td class="px-4 py-3">
-                        <button class="text-white/70 hover:text-white">
-                            <i data-lucide="eye" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr class="hover:bg-white/5">
-                    <td class="px-4 py-3 text-sm font-medium text-white whitespace-nowrap">#ORD-002</td>
-                    <td class="px-4 py-3 text-sm text-white/80 whitespace-nowrap">12 Apr 2026, 09:15</td>
-                    <td class="px-4 py-3 text-sm text-white/80">Takeaway</td>
-                    <td class="px-4 py-3 text-sm text-white/80">4 item</td>
-                    <td class="px-4 py-3 text-sm font-bold text-white">Rp 125.000</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span></td>
-                    <td class="px-4 py-3">
-                        <button class="text-white/70 hover:text-white">
-                            <i data-lucide="eye" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr class="hover:bg-white/5">
-                    <td class="px-4 py-3 text-sm font-medium text-white whitespace-nowrap">#ORD-003</td>
-                    <td class="px-4 py-3 text-sm text-white/80 whitespace-nowrap">11 Apr 2026, 18:45</td>
-                    <td class="px-4 py-3 text-sm text-white/80">Meja 2</td>
-                    <td class="px-4 py-3 text-sm text-white/80">3 item</td>
-                    <td class="px-4 py-3 text-sm font-bold text-white">Rp 85.000</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span></td>
-                    <td class="px-4 py-3">
-                        <button class="text-white/70 hover:text-white">
-                            <i data-lucide="eye" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr class="hover:bg-white/5">
-                    <td class="px-4 py-3 text-sm font-medium text-white whitespace-nowrap">#ORD-004</td>
-                    <td class="px-4 py-3 text-sm text-white/80 whitespace-nowrap">11 Apr 2026, 14:20</td>
-                    <td class="px-4 py-3 text-sm text-white/80">Meja 7</td>
-                    <td class="px-4 py-3 text-sm text-white/80">5 item</td>
-                    <td class="px-4 py-3 text-sm font-bold text-white">Rp 210.000</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span></td>
-                    <td class="px-4 py-3">
-                        <button class="text-white/70 hover:text-white">
-                            <i data-lucide="eye" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr class="hover:bg-white/5">
-                    <td class="px-4 py-3 text-sm font-medium text-white whitespace-nowrap">#ORD-005</td>
-                    <td class="px-4 py-3 text-sm text-white/80 whitespace-nowrap">11 Apr 2026, 11:00</td>
-                    <td class="px-4 py-3 text-sm text-white/80">Meja 1</td>
-                    <td class="px-4 py-3 text-sm text-white/80">2 item</td>
-                    <td class="px-4 py-3 text-sm font-bold text-white">Rp 45.000</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-400">Selesai</span></td>
-                    <td class="px-4 py-3">
-                        <button class="text-white/70 hover:text-white">
-                            <i data-lucide="eye" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+    <x-cashier.data-table title="Daftar Transaksi">
+        <x-slot name="head">
+            <th class="px-6 py-4">Order ID</th>
+            <th class="px-6 py-4">Tanggal</th>
+            <th class="px-6 py-4">Meja</th>
+            <th class="px-6 py-4">Item</th>
+            <th class="px-6 py-4">Total</th>
+            <th class="px-6 py-4">Status</th>
+            <th class="px-6 py-4 text-center">Aksi</th>
+        </x-slot>
 
-<!-- Pagination -->
-<div class="mt-4 flex items-center justify-between">
-    <p class="text-sm text-white/60">Menampilkan 1-5 dari 156</p>
-    <div class="flex gap-1">
-        <button class="px-3 py-1 rounded bg-white/10 text-white/70 text-sm hover:bg-white/20">Prev</button>
-        <button class="px-3 py-1 rounded bg-white text-[#005246] text-sm">1</button>
-        <button class="px-3 py-1 rounded bg-white/10 text-white/70 text-sm hover:bg-white/20">2</button>
-        <button class="px-3 py-1 rounded bg-white/10 text-white/70 text-sm hover:bg-white/20">3</button>
-        <button class="px-3 py-1 rounded bg-white/10 text-white/70 text-sm hover:bg-white/20">Next</button>
-    </div>
+        <x-slot name="body">
+            @foreach($orders as $order)
+            <tr class="hover:bg-surface-container-low/50 transition-colors group">
+                <td class="px-6 py-4 font-bold text-primary-container">{{ $order['order_number'] }}</td>
+                <td class="px-6 py-4 text-on-surface-variant text-body-sm">{{ $order['date'] }}</td>
+                <td class="px-6 py-4">
+                    <span class="bg-surface-container px-2 py-1 rounded text-body-sm font-medium">{{ $order['table_name'] }}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex flex-col">
+                        <span class="text-body-sm font-semibold text-on-surface">{{ $order['items'] }}</span>
+                        <span class="text-xs text-on-surface-variant/40">{{ $order['items_total'] }}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 font-bold text-on-surface">Rp {{ number_format($order['total'], 0, ',', '.') }}</td>
+                <td class="px-6 py-4">
+                    @php
+                        $statusClass = match($order['status']) {
+                            'completed' => 'bg-emerald-100 text-emerald-700',
+                            'cancelled' => 'bg-red-100 text-red-700',
+                            'processing' => 'bg-blue-100 text-blue-700',
+                            default => 'bg-surface-container text-on-surface-variant',
+                        };
+                        $statusLabel = match($order['status']) {
+                            'completed' => 'Selesai',
+                            'cancelled' => 'Batal',
+                            'processing' => 'Proses',
+                            default => 'Pending',
+                        };
+                        $dotColor = match($order['status']) {
+                            'completed' => 'bg-emerald-500',
+                            'cancelled' => 'bg-red-500',
+                            'processing' => 'bg-blue-500',
+                            default => 'bg-surface-variant',
+                        };
+                    @endphp
+                    <span class="inline-flex items-center px-3 py-1 rounded-full {{ $statusClass }} text-xs font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full {{ $dotColor }} mr-2"></span>
+                        {{ $statusLabel }}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="p-2 text-primary-container hover:bg-emerald-50 rounded-lg transition-colors" title="Lihat Detail">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                        <button class="p-2 text-on-surface-variant/40 hover:bg-surface-container rounded-lg transition-colors" title="Cetak Struk">
+                            <span class="material-symbols-outlined">print</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </x-slot>
+
+        <x-slot name="pagination">
+            <p class="text-body-sm text-on-surface-variant">Menampilkan <span class="font-bold text-on-surface">1-5</span> dari <span class="font-bold text-on-surface">156</span> pesanan</p>
+            <div class="flex items-center gap-2">
+                <button class="p-2 border border-outline-variant rounded hover:bg-surface-container-lowest transition-colors text-on-surface-variant/50 disabled:opacity-50" disabled>
+                    <span class="material-symbols-outlined text-sm">chevron_left</span>
+                </button>
+                <button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-white font-bold text-xs">1</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-lowest border border-transparent hover:border-outline-variant text-on-surface-variant font-medium text-xs transition-colors">2</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-lowest border border-transparent hover:border-outline-variant text-on-surface-variant font-medium text-xs transition-colors">3</button>
+                <span class="text-on-surface-variant/40 px-1">...</span>
+                <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-lowest border border-transparent hover:border-outline-variant text-on-surface-variant font-medium text-xs transition-colors">32</button>
+                <button class="p-2 border border-outline-variant rounded hover:bg-surface-container-lowest transition-colors text-on-surface-variant">
+                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                </button>
+            </div>
+        </x-slot>
+    </x-cashier.data-table>
 </div>
 @endsection

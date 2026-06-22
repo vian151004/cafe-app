@@ -1,126 +1,87 @@
 @extends('layouts.cashier')
 
 @section('title', 'Absensi Shift')
-@section('header_title', 'Absensi Shift')
-
-@push('styles')
-<style>
-    #camera-container video,
-    #camera-container canvas {
-        width: 100%;
-        max-width: 400px;
-        border-radius: 12px;
-        object-fit: cover;
-    }
-    #camera-container video {
-        transform: scaleX(-1);
-    }
-    #camera-container canvas {
-        display: none;
-    }
-    #camera-container.has-camera video {
-        transform: scaleX(-1);
-    }
-</style>
-@endpush
 
 @section('content')
-<div class="max-w-xl mx-auto">
-    <!-- Current Shift Info -->
-    <div class="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 mb-6">
+<x-cashier.top-app-bar title="Absensi Shift" />
+
+<div class="p-8 max-w-xl mx-auto">
+    <div class="bg-surface-container-lowest rounded-card border border-surface-variant/30 p-6 mb-6 shadow-sm">
         <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 rounded-full bg-white text-[#005246] flex items-center justify-center">
-                <i data-lucide="user" class="w-6 h-6"></i>
+            <div class="w-12 h-12 rounded-full bg-primary-container text-white flex items-center justify-center">
+                <span class="material-symbols-outlined text-[32px]">account_circle</span>
             </div>
             <div>
-                <h3 class="font-bold text-lg text-white">Nama Kasir</h3>
-                <p class="text-white/60 text-sm">Shift Pagi</p>
+                <h3 class="font-bold text-lg text-on-surface">{{ $shift['name'] }}</h3>
+                <p class="text-on-surface-variant/60 text-body-sm">{{ $shift['shift_name'] }}</p>
             </div>
         </div>
         <div class="grid grid-cols-2 gap-4 text-center">
-            <div class="bg-white/10 rounded-xl p-4">
-                <p class="text-sm text-white/60">Check In</p>
-                <p class="font-bold text-white">06:00</p>
+            <div class="bg-surface-container rounded-card p-4">
+                <p class="text-body-sm text-on-surface-variant/60">Check In</p>
+                <p class="font-bold text-on-surface">{{ $shift['check_in'] }}</p>
             </div>
-            <div class="bg-white/5 rounded-xl p-4">
-                <p class="text-sm text-white/60">Check Out</p>
-                <p class="font-bold text-white/40">--:--</p>
+            <div class="bg-surface-container rounded-card p-4">
+                <p class="text-body-sm text-on-surface-variant/60">Check Out</p>
+                <p class="font-bold text-on-surface-variant/30">{{ $shift['check_out'] }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Camera Section -->
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 mb-6">
-        <h3 class="font-bold text-lg mb-4 text-center text-white">Absensi Pergantian Shift</h3>
-        
-        <div id="camera-container" class="bg-white/5 rounded-xl overflow-hidden mb-4 flex flex-col items-center justify-center min-h-[300px]">
+    <div class="bg-surface-container-lowest border border-surface-variant/30 rounded-card p-6 mb-6 shadow-sm">
+        <h3 class="font-bold text-lg mb-4 text-center text-on-surface">Absensi Pergantian Shift</h3>
+
+        <div id="camera-container" class="bg-surface-container rounded-card overflow-hidden mb-4 flex flex-col items-center justify-center min-h-[300px]">
             <video id="video" autoplay playsinline class="hidden"></video>
             <canvas id="canvas"></canvas>
             <div id="camera-placeholder" class="text-center">
-                <i data-lucide="camera" class="w-16 h-16 text-white/30 mx-auto"></i>
-                <p class="text-white/50 mt-2">Kamera belum aktif</p>
+                <span class="material-symbols-outlined text-on-surface-variant/20" style="font-size: 64px;">photo_camera</span>
+                <p class="text-on-surface-variant/60 mt-2">Kamera belum aktif</p>
             </div>
         </div>
 
         <div class="flex gap-3">
-            <button id="btn-start-camera" class="flex-1 py-3 bg-white text-[#005246] font-semibold rounded-xl hover:bg-white/90 transition-colors">
-                <i data-lucide="camera" class="w-5 h-5 inline mr-2"></i>Buka Kamera
+            <button id="btn-start-camera" class="flex-1 py-3 bg-primary-container text-white font-label rounded-lg hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">photo_camera</span>Buka Kamera
             </button>
-            <button id="btn-capture" class="flex-1 py-3 bg-white text-[#005246] font-semibold rounded-xl hover:bg-white/90 transition-opacity hidden">
-                <i data-lucide="aperture" class="w-5 h-5 inline mr-2"></i>Ambil Foto
+            <button id="btn-capture" class="flex-1 py-3 bg-primary-container text-white font-label rounded-lg hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2 hidden">
+                <span class="material-symbols-outlined text-sm">camera</span>Ambil Foto
             </button>
         </div>
-        
+
         <div id="preview-section" class="mt-4 hidden">
-            <img id="photo-preview" class="w-full rounded-xl mb-3" alt="Preview">
+            <img id="photo-preview" class="w-full rounded-card mb-3" alt="Preview">
             <div class="flex gap-3">
-                <button id="btn-retake" class="flex-1 py-3 bg-white/20 text-white font-semibold rounded-xl hover:bg-white/30 transition-colors">
+                <button id="btn-retake" class="flex-1 py-3 bg-surface-container text-on-surface font-label rounded-lg hover:bg-surface-container-high transition-all flex items-center justify-center gap-2">
                     Ambil Ulang
                 </button>
-                <button class="flex-1 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-colors">
-                    <i data-lucide="check" class="w-5 h-5 inline mr-2"></i>Konfirmasi Absen
+                <button class="flex-1 py-3 bg-emerald-600 text-white font-label rounded-lg hover:bg-emerald-700 transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">check_circle</span>Konfirmasi Absen
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Shift Schedule -->
-    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-        <h3 class="font-bold text-lg mb-4 text-white">Jadwal Shift</h3>
+    <div class="bg-surface-container-lowest border border-surface-variant/30 rounded-card p-6 shadow-sm">
+        <h3 class="font-bold text-lg mb-4 text-on-surface">Jadwal Shift</h3>
         <div class="space-y-3">
-            <div class="flex items-center justify-between p-3 bg-white/10 rounded-xl">
+            @foreach($schedules as $sched)
+            <div class="flex items-center justify-between p-4 bg-surface-container rounded-card">
                 <div class="flex items-center gap-3">
-                    <i data-lucide="sun" class="w-5 h-5 text-yellow-400"></i>
+                    <span class="material-symbols-outlined {{ $sched['icon_color'] }}">{{ $sched['icon'] }}</span>
                     <div>
-                        <p class="font-medium text-white">Shift Pagi</p>
-                        <p class="text-sm text-white/60">06:00 - 14:00</p>
+                        <p class="font-medium text-on-surface">{{ $sched['name'] }}</p>
+                        <p class="text-body-sm text-on-surface-variant/60">{{ $sched['time'] }}</p>
                     </div>
                 </div>
-                <span class="px-3 py-1 text-xs bg-green-500 text-white rounded-full">Aktif</span>
+                @if($sched['status'])
+                <span class="px-3 py-1 text-xs {{ $sched['status_color'] }} rounded-full font-semibold">{{ $sched['status'] }}</span>
+                @endif
             </div>
-            <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="sunset" class="w-5 h-5 text-orange-400"></i>
-                    <div>
-                        <p class="font-medium text-white">Shift Sore</p>
-                        <p class="text-sm text-white/60">14:00 - 22:00</p>
-                    </div>
-                </div>
-                <span class="px-3 py-1 text-xs bg-white/20 text-white rounded-full">Berikutnya</span>
-            </div>
-            <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="moon" class="w-5 h-5 text-indigo-400"></i>
-                    <div>
-                        <p class="font-medium text-white">Shift Malam</p>
-                        <p class="text-sm text-white/60">22:00 - 06:00</p>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('scripts')
@@ -138,9 +99,7 @@
 
     btnStart.addEventListener('click', async () => {
         try {
-            stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: 'user' } 
-            });
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
             video.srcObject = stream;
             video.classList.remove('hidden');
             cameraPlaceholder.classList.add('hidden');
@@ -163,10 +122,7 @@
         video.classList.add('hidden');
         btnCapture.classList.add('hidden');
         previewSection.classList.remove('hidden');
-        
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
+        if (stream) { stream.getTracks().forEach(track => track.stop()); }
     });
 
     btnRetake.addEventListener('click', () => {
