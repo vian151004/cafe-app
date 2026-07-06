@@ -23,3 +23,64 @@ html {
 .menu-card-img {
     filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
+
+/* ===== Animation Initial States ===== */
+
+/* Section 1 - Home animations (from bottom) */
+.home-h1 {
+    transform: translateY(30px);
+    opacity: 0;
+}
+
+.home-p {
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+.home-buttons {
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+/* Section 2 - About animations (from left) */
+.about-title {
+    transform: translateX(-40px);
+    opacity: 0;
+}
+
+.about-desc {
+    transform: translateX(-40px);
+    opacity: 0;
+}
+
+.about-mission-title {
+    transform: translateX(-40px);
+    opacity: 0;
+}
+
+.about-mission-item {
+    transform: translateX(-40px);
+    opacity: 0;
+}
+
+/* Section 3 - Menu animations (from bottom) */
+.menu-header {
+    transform: translateY(30px);
+    opacity: 0;
+}
+
+.menu-card {
+    transform: translateY(40px);
+    opacity: 0;
+}
+
+/* Section 4 - Reservation animations (from left) */
+.reservation-image {
+    transform: translateX(-60px);
+    opacity: 0;
+}
+
+.reservation-content {
+    transform: translateX(40px);
+    opacity: 0;
+}
